@@ -1,5 +1,5 @@
 import {GoogleGenAI} from '@google/genai';
-
+import readline from 'readline'
 const ai = new GoogleGenAI({
   apiKey: process.env.Gemini_api_key,
 });
