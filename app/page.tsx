@@ -61,6 +61,29 @@ const ChatPage = () => {
       console.error(err);
     }
   };
+
+  const GetMessages = async()=>{
+   
+    if (!conversationId) return;
+    try{
+      const response = await fetch(`/api/messages?conversationId=${conversationId}`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+      console.log(data);
+      const message = data.messages.map((msg: any) => ({
+        role: msg.role,
+        parts: [{ text: msg.text }]
+      }));
+      console.log(message);
+      setChatHistory(message);
+    }catch(err){
+      console.error(err);
+    }
+}
+
+
   useEffect(() => {
     Getconversations();
   }, []);
@@ -70,9 +93,20 @@ const ChatPage = () => {
       <div className="navbar bg-base-100 shadow-sm px-6">
         <span className="text-lg font-semibold">My Chatbot</span>
       </div>
-      <h3 className="text-lg font-semibold px-6 py-2 bg-base-100 shadow-sm">
-        {conversations[0]?.title || "No Conversations"}
-      </h3>
+     <div className="p-4 bg-base-100 border-b max-w-2xl w-full mx-auto flex gap-2 overflow-x-auto">
+        {conversations.map((conv) => (
+          <button 
+            key={conv.id}
+            className={`btn ${conv.id === conversationId ? "btn-primary" : "btn-outline"}`}
+            onClick={() => {
+              setConversationId(conv.id)
+              GetMessages(); 
+            }}
+          >
+            {conv.title}
+          </button>
+        ))}
+      </div>
 
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3 max-w-2xl w-full mx-auto">
         {chatHistory.map((msg, index) => (
