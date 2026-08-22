@@ -8,7 +8,6 @@ const ChatPage = () => {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<any[]>([]);
 
-
   const handelsend = async () => {
     if (!message.trim()) return;
     const newMessage = { role: "user", parts: [{ text: message }] };
@@ -21,9 +20,10 @@ const ChatPage = () => {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history: updatedHistory,conversationId }),
+        body: JSON.stringify({ history: updatedHistory, conversationId }),
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       const aiMessage = { role: "model", parts: [{ text: data.message }] };
       setChatHistory((prev) => [...prev, aiMessage]);
@@ -32,7 +32,6 @@ const ChatPage = () => {
     } finally {
       setLoading(false);
     }
-    
   };
 
   const handlePostConversationId = async () => {
@@ -88,7 +87,6 @@ const ChatPage = () => {
   useEffect(() => {
     Getconversations();
   }, []);
-  
 
   return (
     <div className="flex flex-col h-screen bg-base-200">
@@ -112,8 +110,19 @@ const ChatPage = () => {
 
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3 max-w-2xl w-full mx-auto">
         {chatHistory.map((msg, index) => (
-          <div key={index} className={msg.role === "user" ? "chat chat-end" : "chat chat-start"}>
-            <div className={msg.role === "user" ? "chat-bubble chat-bubble-primary" : "chat-bubble"}>
+          <div
+            key={index}
+            className={
+              msg.role === "user" ? "chat chat-end" : "chat chat-start"
+            }
+          >
+            <div
+              className={
+                msg.role === "user"
+                  ? "chat-bubble chat-bubble-primary"
+                  : "chat-bubble"
+              }
+            >
               {msg.parts.map((part: any, i: number) => (
                 <span key={i}>{part.text}</span>
               ))}
@@ -141,14 +150,15 @@ const ChatPage = () => {
         <button className="btn btn-primary" onClick={handelsend}>
           Send
         </button>
-        <button className="btn btn-secondary" onClick={handlePostConversationId}>
+        <button
+          className="btn btn-secondary"
+          onClick={handlePostConversationId}
+        >
           New Conversation
         </button>
       </div>
-     
     </div>
   );
-}
-
+};
 
 export default ChatPage;
