@@ -14,3 +14,17 @@ import supabase from "@/lib/supabase";
     headers: { "Content-Type": "application/json" },
   });
 }
+
+
+export async function GET() {
+  const { data, error } = await supabase
+    .from("conversation")
+    .select("*")
+    .order("created_at", { ascending: false });
+  if (error) console.error(error);
+
+  return new Response(JSON.stringify({ conversations: data }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
+}
